@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Edit Item - Keep It or Let It Go</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 14px;
+            color: #333;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.4;
+        }
+        h1 { font-size: 18px; font-weight: 500; margin: 0 0 20px 0; }
+        a { color: #0066cc; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .back { font-size: 13px; margin-bottom: 15px; display: block; }
+        label { display: block; font-size: 12px; color: #666; margin-bottom: 4px; }
+        input, select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            font-family: inherit;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+        .row { display: flex; gap: 15px; }
+        .row > div { flex: 1; }
+        .error { color: #d32f2f; font-size: 12px; margin: -12px 0 15px 0; }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .btn:hover { background: #555; }
+        .btn-cancel {
+            background: #fff;
+            color: #666;
+            border: 1px solid #ddd;
+            margin-left: 8px;
+        }
+        .btn-cancel:hover { background: #f5f5f5; }
+    </style>
+</head>
+
+<body>
+    <a class="back" th:href="@{'/subtractions/' + ${subtractionRequest.id}}">&larr; Back</a>
+
+    <h1>Edit Item</h1>
+
+    <form th:action="@{/subtractions/{id}(id=${subtractionRequest.id})}" th:object="${subtractionRequest}" method="post">
+
+        <label for="itemName">Item Name</label>
+        <input type="text" id="itemName" th:field="*{itemName}" placeholder="What item are you considering?">
+        <div class="error" th:if="${#fields.hasErrors('itemName')}" th:errors="*{itemName}"></div>
+
+        <label for="category">Category</label>
+        <select id="category" th:field="*{category}">
+            <option value="">Select...</option>
+            <option value="Books">Books</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Media">Media (Digital content)</option>
+            <option value="Subscriptions">Subscriptions</option>
+            <option value="Misc">Misc</option>
+        </select>
+        <div class="error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
+
+        <div class="row">
+            <div>
+                <label for="priority">Priority</label>
+                <select id="priority" th:field="*{priority}">
+                    <option value="">Select...</option>
+                    <option value="1">High</option>
+                    <option value="2">Medium</option>
+                    <option value="3">Low</option>
+                </select>
+                <div class="error" th:if="${#fields.hasErrors('priority')}" th:errors="*{priority}"></div>
+            </div>
+            <div>
+                <label for="dateAdded">Date Added</label>
+                <input type="date" id="dateAdded" th:field="*{dateAdded}">
+            </div>
+        </div>
+
+        <div class="row">
+            <div>
+                <label for="decision">Decision</label>
+                <select id="decision" th:field="*{decision}">
+                    <option value="PENDING">Pending</option>
+                    <option value="KEEP">Keep</option>
+                    <option value="LET_GO">Let Go</option>
+                </select>
+            </div>
+            <div>
+                <label for="decisionDate">Decision Date</label>
+                <input type="date" id="decisionDate" th:field="*{decisionDate}">
+            </div>
+        </div>
+
+        <div>
+            <button type="submit" class="btn">Save</button>
+            <a class="btn btn-cancel" th:href="@{/subtractions/{id}(id=${subtractionRequest.id})}">Cancel</a>
+        </div>
+    </form>
+
+    <script>
+        // Auto-populate decision date when decision changes to Keep or Let Go
+        document.getElementById('decision').addEventListener('change', function() {
+            const decisionDate = document.getElementById('decisionDate');
+            if ((this.value === 'KEEP' || this.value === 'LET_GO') && !decisionDate.value) {
+                // Set to today's date in YYYY-MM-DD format
+                const today = new Date().toISOString().split('T')[0];
+                decisionDate.value = today;
+            }
+        });
+    </script>
+</body>
+</html>

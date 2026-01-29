@@ -1,0 +1,171 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Keep It or Let It Go</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 14px;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.4;
+        }
+        h1 { font-size: 22px; font-weight: 500; margin: 0; }
+        .tagline { color: #666; font-size: 13px; margin: 4px 0 0 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #eee; }
+        th { color: #666; font-weight: 500; font-size: 11px; text-transform: uppercase; }
+        a { color: #0066cc; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .btn {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #333;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover { background: #555; text-decoration: none; }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        .btn-secondary:hover { background: #f5f5f5; }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .header-actions { display: flex; gap: 8px; }
+        .empty { color: #666; padding: 40px 0; text-align: center; }
+        .decision { font-size: 12px; }
+        .keep { color: #28a745; }
+        .let-go { color: #dc3545; }
+        .pending { color: #999; }
+        .added { color: #888; font-size: 12px; }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        .item-link { font-weight: 500; }
+
+        /* Filter bar styles */
+        .filters {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: #f8f8f8;
+            border-radius: 6px;
+            flex-wrap: wrap;
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .filter-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        .filter-select {
+            padding: 4px 8px;
+            font-size: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #fff;
+        }
+        .clear-filters {
+            font-size: 11px;
+            color: #666;
+            margin-left: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-left">
+            <h1>Keep It or Let It Go</h1>
+            <p class="tagline">Keep what works. Let go of what doesn't.</p>
+        </div>
+        <div class="header-actions">
+            <a class="btn btn-secondary" th:href="@{'/import'}">Import</a>
+            <a class="btn" th:href="@{'/add-subtraction'}">+ Add Item</a>
+        </div>
+    </div>
+
+    <div class="success" th:if="${success}" th:text="${success}"></div>
+
+    <!-- Filter Bar -->
+    <form class="filters" th:action="@{/subtractions}" method="get">
+        <div class="filter-group">
+            <span class="filter-label">Sort:</span>
+            <select name="sort" class="filter-select" onchange="this.form.submit()">
+                <option value="">Default</option>
+                <option value="priority" th:selected="${currentSort == 'priority'}">By Priority</option>
+                <option value="dateAdded" th:selected="${currentSort == 'dateAdded'}">By Date Added</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <span class="filter-label">Show:</span>
+            <select name="decision" class="filter-select" onchange="this.form.submit()">
+                <option value="">All</option>
+                <option value="PENDING" th:selected="${selectedDecision == 'PENDING'}">Pending</option>
+                <option value="KEEP" th:selected="${selectedDecision == 'KEEP'}">Keep</option>
+                <option value="LET_GO" th:selected="${selectedDecision == 'LET_GO'}">Let Go</option>
+            </select>
+        </div>
+
+        <a class="clear-filters" th:href="@{/subtractions}" th:if="${selectedDecision != null || currentSort != null}">Clear</a>
+    </form>
+
+    <div th:if="${subtractions.size() > 0}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Category</th>
+                    <th>Decision</th>
+                    <th>Added</th>
+                    <th>Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${subtractions}">
+                    <td><a class="item-link" th:href="@{'/subtractions/' + ${item.id}}" th:text="${item.itemName}"></a></td>
+                    <td th:text="${item.category}"></td>
+                    <td class="decision">
+                        <span th:if="${item.decision.name() == 'KEEP'}" class="keep">Keep</span>
+                        <span th:if="${item.decision.name() == 'LET_GO'}" class="let-go">Let Go</span>
+                        <span th:if="${item.decision.name() == 'PENDING'}" class="pending">Pending</span>
+                    </td>
+                    <td class="added" th:text="${item.dateAdded != null} ? ${#temporals.format(item.dateAdded, 'MMM')} : '-'"></td>
+                    <td>
+                        <span th:if="${item.priority == 1}">High</span>
+                        <span th:if="${item.priority == 2}">Medium</span>
+                        <span th:if="${item.priority == 3}">Low</span>
+                        <span th:if="${item.priority == null}">-</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="empty" th:unless="${subtractions.size() > 0}">
+        <p>No items yet. Add something you're considering.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Keep It or Let It Go</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 14px;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        h1 { font-size: 18px; font-weight: 500; margin: 0 0 20px 0; }
+        a { color: #0066cc; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .back { font-size: 13px; margin-bottom: 15px; display: block; }
+        .field { margin-bottom: 12px; }
+        .label { font-size: 11px; color: #666; text-transform: uppercase; margin-bottom: 2px; }
+        .value { font-size: 14px; }
+        .row { display: flex; gap: 30px; }
+        .row .field { flex: 1; }
+        .keep { color: #28a745; }
+        .let-go { color: #dc3545; }
+        .pending { color: #999; }
+        .muted { color: #999; font-style: italic; }
+        .quote { color: #888; font-size: 12px; font-style: italic; margin-top: 30px; padding-top: 15px; border-top: 1px solid #eee; }
+    </style>
+</head>
+
+<body>
+    <a class="back" th:href="@{'/subtractions'}">&larr; Back</a>
+
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 th:text="${itemName}"></h1>
+        <a th:href="@{'/subtractions/' + ${id} + '/edit'}" style="font-size: 13px;">Edit</a>
+    </div>
+
+    <div class="field">
+        <div class="label">Category</div>
+        <div class="value" th:text="${category}"></div>
+    </div>
+
+    <div class="row">
+        <div class="field">
+            <div class="label">Decision</div>
+            <div class="value">
+                <span th:if="${decision.name() == 'KEEP'}" class="keep">Keep</span>
+                <span th:if="${decision.name() == 'LET_GO'}" class="let-go">Let Go</span>
+                <span th:if="${decision.name() == 'PENDING'}" class="pending">Pending</span>
+            </div>
+        </div>
+        <div class="field">
+            <div class="label">Priority</div>
+            <div class="value">
+                <span th:if="${priority == 1}">High</span>
+                <span th:if="${priority == 2}">Medium</span>
+                <span th:if="${priority == 3}">Low</span>
+                <span th:if="${priority == null}">-</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="field">
+            <div class="label">Added</div>
+            <div class="value">
+                <span th:if="${dateAdded != null}" th:text="${#temporals.format(dateAdded, 'MMM yyyy')}"></span>
+                <span th:unless="${dateAdded != null}" class="muted">Not set</span>
+            </div>
+        </div>
+        <div class="field">
+            <div class="label">Decision Date</div>
+            <div class="value">
+                <span th:if="${decisionDate != null}" th:text="${#temporals.format(decisionDate, 'MMM d, yyyy')}"></span>
+                <span th:unless="${decisionDate != null}" class="muted">-</span>
+            </div>
+        </div>
+    </div>
+
+    <p class="quote">"Have nothing in your houses that you do not know to be useful or believe to be beautiful." &mdash; William Morris</p>
+</body>
+</html>
