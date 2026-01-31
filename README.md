@@ -1,10 +1,30 @@
-# Keep It or Let It Go
+# Decision Tracker  
+*Keep It or Let It Go*
 
-Keep It or Let It Go is a small Java application for tracking simple keep-or-let-go decisions. It is designed for personal items such as books, media, digital content and other belongings. Items are added for consideration and tracked over time. A final decision and decision date are recorded. Once decided, items are removed from the active list.
+A small Java application for tracking simple keep-or-let-go decisions for personal items.
 
-The project was originally developed as part of a Java programming course and later refactored for personal use. During the refactor, I simplified the data model, clarified state transitions, and removed unnecessary features to keep the focus on a single, well-defined workflow.
+---
 
-This project demonstrates practical use of core Java concepts—including enums, date handling, and file-based persistence—while emphasizing restrained scope, clarity, and maintainability.
+## Overview
+
+Keep It or Let It Go is a small Java application for tracking simple keep-or-let-go decisions. Items are added for consideration, reviewed over time, and eventually marked as either kept or removed.
+
+---
+
+## Objective
+
+The objective of this project was to practice core Java concepts while designing a simple, maintainable application with a well-defined lifecycle for user decisions.
+
+---
+
+## Features
+
+- Add items for consideration
+- Track items until a decision is made
+- Record final decision and decision date
+- Remove completed items from the active list
+
+---
 
 ## Tech Stack
 
@@ -14,19 +34,27 @@ This project demonstrates practical use of core Java concepts—including enums,
 - H2 Database (file-based)
 - Maven
 
+---
+
 ## Running Locally
 
-```
+```text
 run.bat
 ```
-Then open http://localhost:8080
 
-![Screenshot](screenshot.jpg)
+Then open: http://localhost:8080
 
-## License
+---
 
-MIT
+
+## Notes
+
+This project was originally developed as part of a Java programming course and later lightly refactored for personal use. The emphasis is on clarity and practical application of foundational concepts.
+
+---
+![Decision Tracker application screenshot](screenshot.jpg)
 
 ## Author
 
 K Flowers
+
